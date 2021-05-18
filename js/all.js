@@ -33,15 +33,13 @@ const app={
         path :'jason06286',
         productData:[],
     },
-    methods: {
-        // css
+       // css
     focusfn() {
         const parent = this.parentNode;
         parent.classList.add('focus');
     },
     blurfn() {
         const parent = this.parentNode;
-        console.log(this)
         if (this.value === '') {
             parent.classList.remove('focus');
         }
@@ -62,7 +60,7 @@ const app={
     },
     // validation
     validateFn(){
-        let errors = validate(form, app.data.constraints);
+        let errors = validate(form, this.data.constraints);
             //呈現在畫面上
             if(errors){
             Object.keys(errors).forEach(function(keys) {
@@ -81,7 +79,7 @@ const app={
             console.log('emailgood')
             axios({
                 method: 'post',
-                url: `${app.data.url}admin/signin`,
+                url: `${this.data.url}admin/signin`,
                 data:{
                     "username": inputs[0].value,
                     "password": inputs[1].value
@@ -101,8 +99,7 @@ const app={
     },
     storgeToken(res) {
         if(res.success){
-            const token=res.token
-            const expired=res.expired
+            const { token,expired }=res
             console.log(token,expired)
             document.cookie=`hexToken=${token};expires=${new Date(expired)}`
             this.logStatus(res.success)
@@ -132,7 +129,7 @@ const app={
         axios.defaults.headers.common.Authorization=cookieToken
         axios({
             method: 'post',
-            url: `${app.data.url}logout`,
+            url: `${this.data.url}logout`,
         })
             .then(res => {
                 console.log(res)
@@ -149,7 +146,7 @@ const app={
         axios.defaults.headers.common.Authorization=cookieToken
         axios({
             method: 'post',
-            url: `${app.data.url}api/user/check`,
+            url: `${this.data.url}api/user/check`,
         })
             .then(res => {
                 console.log(res)
@@ -165,10 +162,10 @@ const app={
         axios.defaults.headers.common.Authorization=cookieToken
         axios({
             method: 'get',
-            url: `${app.data.url}api/${app.data.path}/admin/products`,
+            url: `${this.data.url}api/${this.data.path}/admin/products`,
         }).then((res )=> {
-                app.data.productData=res.data.products
-                console.log(app.data.productData)
+                this.data.productData=res.data.products
+                console.log(this.data.productData)
                 this.render()
             })
             .catch(err => {
@@ -176,7 +173,7 @@ const app={
             })
     },
     render() {
-        let str=app.data.productData.map(item=>`
+        const str=this.data.productData.map(item=>`
         <li class="card" >
                 <img src=${item.imageUrl} class="card-img-top" alt="...">
                 <div class="card-body">
@@ -193,7 +190,7 @@ const app={
             const id=e.target.dataset.id
             axios({
                 method: 'delete',
-                url: `${app.data.url}api/${app.data.path}/admin/product/${id}`,
+                url: `${this.data.url}api/${this.data.path}/admin/product/${id}`,
             })
                 .then(res => {
                     console.log(res)
@@ -210,7 +207,7 @@ const app={
         axios.defaults.headers.common.Authorization=cookieToken
         axios({
             method: 'post',
-            url: `${app.data.url}api/${app.data.path}/admin/product`,
+            url: `${this.data.url}api/${this.data.path}/admin/product`,
             data:{
                 data:{
                     "title": "[賣]動物園造型衣服3", 
@@ -241,20 +238,19 @@ const app={
                 console.log(err.response)
             })
     },
-    },
 }
 
 
 inputs.forEach((item) => {
     console.log(this)
-    item.addEventListener('focus',app.methods.focusfn);
-    item.addEventListener('blur', app.methods.blurfn);
+    item.addEventListener('focus',app.focusfn);
+    item.addEventListener('blur', app.blurfn);
 });
 
 closeBtn.addEventListener('click',(e)=>{
     e.preventDefault()
     closeBtn.parentNode.classList.add('d-none')
-    app.methods.clearModal()
+    app.clearModal()
 })
 
 navbarLogin.addEventListener('click',(e)=>{
@@ -265,18 +261,18 @@ navbarLogin.addEventListener('click',(e)=>{
 inputs.forEach((item) => {
     item.addEventListener("change", (e) =>{
         item.parentNode.nextElementSibling.textContent = "";
-        app.methods.validateFn()
+        app.validateFn()
     });
 });
 
-loginBtn.addEventListener('click',(e)=>{app.methods.login()})
-logoutBtn.addEventListener('click',(e)=>{app.methods.logout()})
-checkBtn.addEventListener('click',(e)=>{app.methods.checkLogin()})
-addBtn.addEventListener('click',(e)=>{app.methods.addProduct()})
-productlist.addEventListener('click',(e)=>{app.methods.delProduct(e)})
+loginBtn.addEventListener('click',(e)=>{app.login()})
+logoutBtn.addEventListener('click',(e)=>{app.logout()})
+checkBtn.addEventListener('click',(e)=>{app.checkLogin()})
+addBtn.addEventListener('click',(e)=>{app.addProduct()})
+productlist.addEventListener('click',(e)=>{app.delProduct(e)})
 
 
-app.methods.init()
+app.init()
 
 
 
