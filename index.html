@@ -5,10 +5,52 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.2/iconfont/material-icons.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/all.css">
 </head>
 <body>
-
+    <nav>
+        <div class="container">
+            <ul class="d-flex list">
+                <li><a href="#" class="navbar-logcheck">確認是否登入</a></li>
+                <li><a href="#" class="navbar-addProduct">新增產品</a></li>
+                <li><a href="#" class="navbar-login">登入</a></li>
+                <li><a href="#" class="navbar-logout d-none">登出</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section>
+        <div class="container" >
+            <div class="relative">
+                <form class="modal ">
+                    <a href="#" class="material-icons close">close</a>
+                    <div class="input-group ">
+                        <span class="material-icons">person</span>
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username">
+                    </div>
+                    <div class="messages username"></div>
+                    <div class="input-group   ">
+                        <span class="material-icons">lock</span>
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password">
+                    </div>
+                    <div class="messages password"></div>
+                    <p>Forget Password ?</p>
+                    <button type="button" class="btn loginBtn">Login</button>
+                </form>
+                <ul class="product-list d-none">
+                </ul>
+                <div class="img">
+                    <img src="img/composition-23.png" alt="">
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
     <script src="js/all.js"></script>
 </body>
 </html>
