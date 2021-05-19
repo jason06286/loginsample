@@ -8,6 +8,7 @@ const checkBtn=document.querySelector('.navbar-logcheck')
 const productlist=document.querySelector('.product-list')
 const addBtn=document.querySelector('.navbar-addProduct')
 const img=document.querySelector('.img')
+const modalDom=document.querySelector('.modal')
 
 
 const app={
@@ -102,10 +103,14 @@ const app={
             const { token,expired }=res
             console.log(token,expired)
             document.cookie=`hexToken=${token};expires=${new Date(expired)}`
+            const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
+            axios.defaults.headers.common.Authorization=cookieToken
             this.logStatus(res.success)
         }else{
             const token=""
             document.cookie=`hexToken=${token};expires=${new Date()}`
+            const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
+            axios.defaults.headers.common.Authorization=cookieToken
         }
     },
     logStatus(suceess) {
@@ -125,8 +130,6 @@ const app={
         }
     },
     logout() {
-        const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
-        axios.defaults.headers.common.Authorization=cookieToken
         axios({
             method: 'post',
             url: `${this.data.url}logout`,
@@ -158,13 +161,12 @@ const app={
             })
     },
     getProduct() {
-        const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
-        axios.defaults.headers.common.Authorization=cookieToken
         axios({
             method: 'get',
             url: `${this.data.url}api/${this.data.path}/admin/products`,
         }).then((res )=> {
                 this.data.productData=res.data.products
+                console.log(res)
                 console.log(this.data.productData)
                 this.render()
             })
@@ -203,8 +205,6 @@ const app={
         }
     },
     addProduct() {
-        const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
-        axios.defaults.headers.common.Authorization=cookieToken
         axios({
             method: 'post',
             url: `${this.data.url}api/${this.data.path}/admin/product`,
@@ -242,7 +242,6 @@ const app={
 
 
 inputs.forEach((item) => {
-    console.log(this)
     item.addEventListener('focus',app.focusfn);
     item.addEventListener('blur', app.blurfn);
 });
@@ -264,6 +263,15 @@ inputs.forEach((item) => {
         app.validateFn()
     });
 });
+
+modalDom.addEventListener('keyup',(e)=>{
+    if(e.keyCode===13){
+        app.login()
+    }else if(e.keyCode === 27){
+        closeBtn.parentNode.classList.add('d-none')
+        app.clearModal()
+    }
+})
 
 loginBtn.addEventListener('click',(e)=>{app.login()})
 logoutBtn.addEventListener('click',(e)=>{app.logout()})
