@@ -82,8 +82,8 @@ const app={
                 method: 'post',
                 url: `${this.data.url}admin/signin`,
                 data:{
-                    "username": inputs[0].value,
-                    "password": inputs[1].value
+                    username: inputs[0].value,
+                    password: inputs[1].value
                 }
             })
                 .then(res => {
@@ -137,8 +137,10 @@ const app={
             .then(res => {
                 console.log(res)
                 alert(res.data.message)
-                this.logStatus(!res.data.success)
-                this.storgeToken(!res.data.success)
+                if(res.data.success){
+                    this.logStatus(!res.data.success)
+                    this.storgeToken(!res.data.success)
+                }
             })
             .catch(err => {
                 console.log(err.response)
@@ -168,7 +170,9 @@ const app={
                 this.data.productData=res.data.products
                 console.log(res)
                 console.log(this.data.productData)
-                this.render()
+                if(res.data.success){
+                    this.render()
+                }
             })
             .catch(err => {
                 console.log(err.response)
@@ -197,7 +201,9 @@ const app={
                 .then(res => {
                     console.log(res)
                     alert(res.data.message)
-                    this.getProduct()
+                    if(res.data.success){
+                        this.getProduct()
+                    }
                 })
                 .catch(err => {
                     console.log(err.response)
@@ -210,16 +216,16 @@ const app={
             url: `${this.data.url}api/${this.data.path}/admin/product`,
             data:{
                 data:{
-                    "title": "[賣]動物園造型衣服3", 
-                    "category": "衣服2",
-                    "origin_price": 100,
-                    "price": 300,
-                    "unit": "個",
-                    "description": "Sit down please 名設計師設計",
-                    "content": "這是內容",
-                    "is_enabled": 1,
-                    "imageUrl" : "https://images.unsplash.com/photo-1587300003388-59208cc962cb?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
-                    "imagesUrl": [
+                    title: "[賣]動物園造型衣服3", 
+                    category: "衣服2",
+                    origin_price: 100,
+                    price: 300,
+                    unit: "個",
+                    description: "Sit down please 名設計師設計",
+                    content: "這是內容",
+                    is_enabled: 1,
+                    imageUrl : "https://images.unsplash.com/photo-1587300003388-59208cc962cb?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
+                    imagesUrl: [
                         "圖片網址一",
                         "圖片網址二",
                         "圖片網址三",
@@ -232,7 +238,9 @@ const app={
             .then(res => {
                 console.log(res)
                 alert(res.data.message)
-                this.getProduct()
+                if(res.data.success){
+                    this.getProduct()
+                }
             })
             .catch(err => {
                 console.log(err.response)
@@ -281,12 +289,6 @@ productlist.addEventListener('click',(e)=>{app.delProduct(e)})
 
 
 app.init()
-
-
-
-
-
-
 
 
 
