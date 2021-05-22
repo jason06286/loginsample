@@ -5,51 +5,223 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/3.0.2/iconfont/material-icons.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/all.css">
 </head>
 <body>
-    <nav>
-        <div class="container">
-            <ul class="d-flex list">
-                <li><a href="#" class="navbar-logcheck">帳號狀態</a></li>
-                <li><a href="#" class="navbar-addProduct">新增產品</a></li>
-                <li><a href="#" class="navbar-login">登入</a></li>
-                <li><a href="#" class="navbar-logout d-none">登出</a></li>
-            </ul>
-        </div>
-    </nav>
-    <section>
-        <div class="container" >
-            <div class="relative">
-                <form class="modal ">
-                    <a href="#" class="material-icons close">close</a>
-                    <div class="input-group ">
-                        <span class="material-icons">person</span>
-                        <label for="username">Username</label>
-                        <input type="email" id="username" name="username">
-                    </div>
-                    <div class="messages username"></div>
-                    <div class="input-group   ">
-                        <span class="material-icons">lock</span>
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password">
-                    </div>
-                    <div class="messages password"></div>
-                    <p>Forget Password ?</p>
-                    <button type="button" class="btn loginBtn">Login</button>
-                </form>
-                <ul class="product-list d-none">
+    <div id="app">
+        <nav>
+            <div class="container">
+                <ul class="d-flex list">
+                    <li><a href="#" @click.prevent="checkLogin">帳號狀態</a></li>
+                    <li><a href="#"  @click.prevent="productModalShow(temp,$event)" data-status="新增產品">新增產品</a></li>
+                    <li v-if="!isLogin"><a href="#" @click.prevent="isModalshow=true"  >登入</a></li>
+                    <li  v-else><a href="#"  @click.prevent="logout">登出</a></li>
                 </ul>
-                <div class="img">
-                    <img src="img/composition-23.png" alt="">
+            </div>
+        </nav>
+        <section>
+            <div class="container" >
+                <div class="relative">
+                    <form class="login-modal" v-if="isModalshow" id="myform" @keyup="keyevent">
+                        <a href="#"  @click.prevent="closeModal" class="material-icons close">close</a>
+                        <div class="input-group" :class="{focus:loginObj.username}">
+                            <span class="material-icons">person</span>
+                            <label for="username">Username</label>
+                            <input type="email" id="username" @change="validateFn" v-model="loginObj.username"  name="username">
+                        </div>
+                        <div class="messages username"></div>
+                        <div class="input-group" :class="{focus:loginObj.password}">
+                            <span class="material-icons">lock</span>
+                            <label for="password">Password</label>
+                            <input type="password" id="password"  @change="validateFn" v-model="loginObj.password" name="password">
+                        </div>
+                        <div class="messages password"></div>
+                        <p>Forget Password ?</p>
+                        <button type="button" class="login-btn loginBtn" @click="login">Login</button>
+                    </form>
+                    <table class="table mt-4" v-if="isLogin">
+                        <thead>
+                            <tr>
+                                <th width="120">
+                                分類
+                                </th>
+                                <th>產品名稱</th>
+                                <th width="120">
+                                原價
+                                </th>
+                                <th width="120">
+                                售價
+                                </th>
+                                <th width="100">
+                                是否啟用
+                                </th>
+                                <th width="120" >
+                                編輯
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody >
+                            <tr v-for="(item, index) in productData" :key="item.title">
+                                <td>{{item.category}}</td>
+                                <td>{{item.title}}</td>
+                                <td class="text-end">{{item.origin_price}}</td>
+                                <td class="text-end">{{item.price}}</td>
+                                <td>
+                                    <span class="text-success" v-if="item.is_enabled=== +1">啟用</span>
+                                    <span v-else>未啟用</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" data-status="編輯產品" @click="productModalShow(item,$event)">
+                                        編輯
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm"  @click="delProductModal(item.id)">
+                                        刪除
+                                        </button>
+                                    </div>
+                                    </td>
+                                </tr>
+                        </tbody>
+                    </table>
+                    <div class="img"  v-if="!isLogin">
+                        <img src="img/composition-23.png" alt="">
+                    </div>
                 </div>
             </div>
+        </section>
+        <!-- Modal -->
+        <div id="productModal" ref="productModal" class="modal fade" tabindex="-1" aria-labelledby="productModalLabel"
+        aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content border-0">
+        <div class="modal-header bg-dark text-white">
+            <h5 id="productModalLabel" class="modal-title">
+            <span>{{usemethod}}</span>
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-    </section>
+        <div class="modal-body">
+            <div class="row">
+            <div class="col-sm-4">
+                <div class="mb-1">
+                    <div class="form-group">
+                        <label for="imageUrl">輸入圖片網址</label>
+                        <input type="text" class="form-control"
+                                placeholder="請輸入圖片連結" v-model="temp.imageUrl">
+                    </div>
+                    <img class="img-fluid" :src="temp.imageUrl" alt="">
+                    </div>
+                    <div>
+                    <button class="btn btn-outline-primary btn-sm d-block w-100" type="button" @click="addImage">
+                        新增圖片
+                    </button>
+                    </div>
+                    <div>
+                    <button class="btn btn-outline-danger btn-sm d-block w-100" type="button" @click="delImage">
+                        刪除圖片
+                    </button>
+                    <img class="img-fluid" v-for="(item, index) in temp.imagesUrl" :key="item" :src="item" alt="">
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="form-group">
+                <label for="title">標題</label>
+                <input id="title" type="text" class="form-control" placeholder="請輸入標題" v-model="temp.title">
+                </div>
+
+                <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="category">分類</label>
+                    <input id="category" type="text" class="form-control"
+                            placeholder="請輸入分類" v-model="temp.category">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="price">單位</label>
+                    <input id="unit" type="text" class="form-control" placeholder="請輸入單位" v-model="temp.unit">
+                </div>
+                </div>
+
+                <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="origin_price">原價</label>
+                    <input id="origin_price" type="number" min="0" class="form-control" placeholder="請輸入原價" v-model="temp.origin_price ">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="price">售價</label>
+                    <input id="price" type="number" min="0" class="form-control"
+                            placeholder="請輸入售價" v-model="temp.price">
+                </div>
+                </div>
+                <hr>
+
+                <div class="form-group">
+                <label for="description">產品描述</label>
+                <textarea id="description" type="text" class="form-control"
+                            placeholder="請輸入產品描述" v-model="temp.description">
+                </textarea>
+                </div>
+                <div class="form-group">
+                <label for="content">說明內容</label>
+                <textarea id="description" type="text" class="form-control"
+                            placeholder="請輸入說明內容" v-model="temp.content">
+                </textarea>
+                </div>
+                <div class="form-group">
+                <div class="form-check">
+                    <input id="is_enabled" class="form-check-input" type="checkbox"
+                    v-model="temp.is_enabled"   :true-value="1" :false-value="0" >
+                    <label class="form-check-label" for="is_enabled">是否啟用</label>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            取消
+            </button>
+            <button type="button" class="btn btn-primary" @click="ProductStatus" >
+            確認
+            </button>
+        </div>
+        </div>
+    </div>
+        </div>
+        <div id="delProductModal" ref="delProductModal" class="modal fade" tabindex="-1"
+            aria-labelledby="delProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content border-0">
+            <div class="modal-header bg-danger text-white">
+                <h5 id="delProductModalLabel" class="modal-title">
+                <span>刪除產品</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                是否刪除
+                <strong class="text-danger"></strong> 商品(刪除後將無法恢復)。
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                取消
+                </button>
+                <button type="button" class="btn btn-danger" @click="delProduct">
+                確認刪除
+                </button>
+            </div>
+            </div>
+        </div>
+        </div>
+        <!-- Modal -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@next"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
     <script src="js/all.js"></script>
 </body>

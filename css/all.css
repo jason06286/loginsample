@@ -1477,7 +1477,7 @@ nav {
   height: calc(100vh - 62px);
 }
 
-.modal {
+.login-modal {
   width: 400px;
   height: 300px;
   padding: 16px;
@@ -1501,20 +1501,20 @@ nav {
 }
 
 @media (max-width: 425px) {
-  .modal {
+  .login-modal {
     width: 350px;
     right: 0;
     left: 0;
   }
 }
 
-.modal p {
+.login-modal p {
   text-align: right;
   margin-top: 8px;
   font-size: 12px;
 }
 
-.modal .close {
+.login-modal .close {
   display: block;
   text-decoration: none;
   text-align: center;
@@ -1587,7 +1587,7 @@ nav {
   color: #4bceb1;
 }
 
-.btn {
+.login-btn {
   display: block;
   text-decoration: none;
   text-align: center;
@@ -1605,7 +1605,7 @@ nav {
   transition: .5s;
 }
 
-.btn:hover {
+.login-btn:hover {
   background-color: #61c4d6;
 }
 
@@ -1646,47 +1646,5 @@ nav {
   color: red;
   margin-top: 8px;
   text-align: right;
-}
-
-.product-list {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-}
-
-.product-list .card {
-  padding: 0;
-  width: 28%;
-  margin: 2%;
-  border: 2px solid #000;
-  border-radius: 16px;
-}
-
-@media (max-width: 768px) {
-  .product-list .card {
-    width: 45%;
-  }
-}
-
-@media (max-width: 425px) {
-  .product-list .card {
-    width: 90%;
-  }
-}
-
-.product-list .card-body {
-  padding: 0 16px;
-}
-
-.product-list .card-img-top {
-  width: 100%;
-  border-radius: 16px 16px 0 0;
-}
-
-.product-list .card-title {
-  font-weight: 700;
-  margin: 8px 0;
 }
 /*# sourceMappingURL=all.css.map */
