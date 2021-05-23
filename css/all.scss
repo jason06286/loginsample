@@ -31,6 +31,7 @@ nav{
         padding: 8px;
         transition: all .5s;
         display: block;
+        border-bottom: 1px solid transparent;
     }
     li a:hover{
         border-bottom: 1px solid #fff;
@@ -178,32 +179,4 @@ nav{
 
 }
 
-// .product-list{
-//     display: flex;
-//     flex-wrap: wrap;
-//     .card{
-//         padding: 0;
-//         width: 28%;
-//         margin: 2%;
-//         border: 2px solid #000;
-//         border-radius: 16px;
-//         @media (max-width:768px) {
-//             width: 45%;
-//         }
-//         @media (max-width:425px) {
-//             width: 90%;
-//         }
-//     }
-//     .card-body{
-//         padding: 0 16px;
-//     }
-//     .card-img-top{
-//         width: 100%;
-//         border-radius: 16px 16px 0 0;
-//     }
-//     .card-title{
-//         font-weight: 700;
-//         margin: 8px 0;
-//     }
-// }
 

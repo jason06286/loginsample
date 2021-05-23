@@ -1463,6 +1463,7 @@ nav {
   -webkit-transition: all .5s;
   transition: all .5s;
   display: block;
+  border-bottom: 1px solid transparent;
 }
 
 .list li a:hover {
