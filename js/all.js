@@ -1,7 +1,3 @@
-
-
-
-
 const app=Vue.createApp(
     {
         data() {
@@ -51,7 +47,7 @@ const app=Vue.createApp(
             }
         },
         methods: {
-                // css
+            // css
             clearModal(){
                 const form = document.querySelector("form#myform");
                 this.loginObj.username=''
@@ -70,10 +66,9 @@ const app=Vue.createApp(
             validateFn(e){
                 const form = document.querySelector("form#myform");
                 let errors = validate(form, this.constraints);
-                document.querySelector(`.username`).textContent =""
-                document.querySelector(`.password`).textContent =""
+                document.querySelector('.username').textContent =""
+                document.querySelector('.password').textContent =""
                 this.errors=errors
-                console.log('this.errors :>> ', this.errors);
                     //呈現在畫面上
                     if(errors){
                     Object.keys(errors).forEach(function(keys) {
@@ -81,15 +76,14 @@ const app=Vue.createApp(
                     })
                     }
             },
-            //week02 start
+            //work start
             init() {
                 this.storgeToken(false)
             },
             login() {
                 this.validateFn()
-                console.log(this.errors=== undefined)
-                if(this.errors=== undefined){
-                    console.log('emailgood')
+                if(this.errors === undefined){
+                    console.log('logingood')
                     axios({
                         method: 'post',
                         url: `${this.url}admin/signin`,
@@ -170,7 +164,6 @@ const app=Vue.createApp(
                         this.productData=res.data.products
                         console.log(res)
                         console.log(this.productData)
-                        console.log('this.productData[0].is_enabled :>> ', this.productData[0].is_enabled===+1);
                     })
                     .catch(err => {
                         console.log(err.response)
@@ -194,8 +187,7 @@ const app=Vue.createApp(
                         })
             },
             ProductStatus() {
-                const  myModal = new bootstrap.Modal(document.querySelector('#productModal'))
-                if(this.usemethod==='新增產品'){
+                if(this.usemethod === '新增產品'){
                     axios({
                         method: 'post',
                         url: `${this.url}api/${this.path}/admin/product`,
@@ -220,7 +212,7 @@ const app=Vue.createApp(
                             console.log(err.response)
                         })
                 }
-                if(this.usemethod==='編輯產品'){
+                if(this.usemethod === '編輯產品'){
                     axios({
                         method: 'put',
                         url: `${this.url}api/${this.path}/admin/product/${this.temp.id}`,
@@ -237,10 +229,8 @@ const app=Vue.createApp(
                             console.log(res)
                             alert(res.data.message)
                             if(res.data.success){
-                                console.log('123')
                                 productModal.hide()
                                 this.getProduct()
-                                
                             }
                         })
                         .catch(err => {
@@ -253,7 +243,7 @@ const app=Vue.createApp(
                 this.clearModal()
             },
             keyevent(e){
-                if(e.keyCode===13){
+                if(e.keyCode === 13){
                     this.login()
                 }else if(e.keyCode === 27){
                     this.clearModal()
@@ -263,21 +253,19 @@ const app=Vue.createApp(
             addImage(){
                 this.temp.imagesUrl.push(this.temp.imageUrl)
                 this.temp.imageUrl=""
-                console.log(this.temp.imagesUrl)
             },
             delImage(){
                 this.temp.imagesUrl.pop()
-                console.log(this.temp.imagesUrl)
             },
-            productModalShow(item=this.temp,e){
+            productModalShow(item,e){
                 const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
                 console.log(cookieToken)
-                if(e.target.dataset.status==="編輯產品" && cookieToken !=""){
+                if(e.target.dataset.status === "編輯產品" && cookieToken != ""){
                     this.usemethod="編輯產品"
                     this.temp=item
-                    console.log('編輯產品')
+                    this.temp['imagesUrl'] === undefined ?this.temp.imagesUrl=[]:false
                     productModal.show()
-                }else if(e.target.dataset.status==="新增產品" && cookieToken !=""){
+                }else if(e.target.dataset.status === "新增產品" && cookieToken != ""){
                     this.usemethod="新增產品"
                     this.temp={
                         title: "", 
@@ -289,11 +277,8 @@ const app=Vue.createApp(
                         content: "",
                         is_enabled: "",
                         imageUrl : "",
-                        imagesUrl: [
-                            
-                        ],
+                        imagesUrl: [],
                     },
-                    console.log('新增產品')
                     productModal.show()
                 }else{
                     alert("驗證錯誤，請重新登入")

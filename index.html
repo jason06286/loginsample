@@ -18,7 +18,7 @@
                 <ul class="d-flex list">
                     <li><a href="#" @click.prevent="checkLogin">帳號狀態</a></li>
                     <li><a href="#"  @click.prevent="productModalShow(temp,$event)" data-status="新增產品">新增產品</a></li>
-                    <li v-if="!isLogin"><a href="#" @click.prevent="isModalshow=true"  >登入</a></li>
+                    <li v-if="!isLogin"><a href="#" @click.prevent="isModalshow=true">登入</a></li>
                     <li  v-else><a href="#"  @click.prevent="logout">登出</a></li>
                 </ul>
             </div>
@@ -65,7 +65,7 @@
                             </tr>
                         </thead>
                         <tbody >
-                            <tr v-for="(item, index) in productData" :key="item.title">
+                            <tr v-for="(item, index) in productData" :key="item.id">
                                 <td>{{item.category}}</td>
                                 <td>{{item.title}}</td>
                                 <td class="text-end">{{item.origin_price}}</td>
