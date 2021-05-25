@@ -39,11 +39,12 @@ const app=Vue.createApp(
                     content: "",
                     is_enabled: "",
                     imageUrl : "",
-                    imagesUrl: [
-                        
-                    ],
+                    imagesUrl: [],
                 },
-                id:''
+                id:'',
+                productModal:'',
+                delModal:'',
+
             }
         },
         methods: {
@@ -178,7 +179,7 @@ const app=Vue.createApp(
                             console.log(res)
                             alert(res.data.message)
                             if(res.data.success){
-                                delModal.hide()
+                                this.delModal.hide()
                                 this.getProduct()
                             }
                         })
@@ -204,7 +205,7 @@ const app=Vue.createApp(
                             console.log(res)
                             alert(res.data.message)
                             if(res.data.success){
-                                productModal.hide()
+                                this.productModal.hide()
                                 this.getProduct()
                             }
                         })
@@ -229,7 +230,7 @@ const app=Vue.createApp(
                             console.log(res)
                             alert(res.data.message)
                             if(res.data.success){
-                                productModal.hide()
+                                this.productModal.hide()
                                 this.getProduct()
                             }
                         })
@@ -262,9 +263,10 @@ const app=Vue.createApp(
                 console.log(cookieToken)
                 if(e.target.dataset.status === "編輯產品" && cookieToken != ""){
                     this.usemethod="編輯產品"
+                    console.log(item)
                     this.temp=item
-                    this.temp['imagesUrl'] === undefined ?this.temp.imagesUrl=[]:false
-                    productModal.show()
+                    this.temp.imagesUrl=this.temp.imagesUrl??[]
+                    this.productModal.show()
                 }else if(e.target.dataset.status === "新增產品" && cookieToken != ""){
                     this.usemethod="新增產品"
                     this.temp={
@@ -279,26 +281,26 @@ const app=Vue.createApp(
                         imageUrl : "",
                         imagesUrl: [],
                     },
-                    productModal.show()
+                    this.productModal.show()
                 }else{
                     alert("驗證錯誤，請重新登入")
                 }
             },
             delProductModal(id){
                 this.id=id
-                delModal.show()
+                this.delModal.show()
             }
         },
-        created() {
+        mounted() {
             this.init()
+            this.productModal = new bootstrap.Modal(document.querySelector('#productModal'))
+            this.delModal = new bootstrap.Modal(document.querySelector('#delProductModal'))
         },
     }
 )
 
 app.mount('#app')
 
-const  productModal = new bootstrap.Modal(document.querySelector('#productModal'))
-const  delModal = new bootstrap.Modal(document.querySelector('#delProductModal'))
 
 
 
