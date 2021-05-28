@@ -18,7 +18,7 @@
                 <ul class="d-flex list">
                     <li><a href="#" @click.prevent="checkLogin">帳號狀態</a></li>
                     <li><a href="#"  @click.prevent="productModalShow(temp,$event)" data-status="新增產品">新增產品</a></li>
-                    <li v-if="!isLogin"><a href="#" @click.prevent="isModalshow=true">登入</a></li>
+                    <li v-if="!isLogin"><a href="#" @click.prevent="isLoginModalShow=true">登入</a></li>
                     <li  v-else><a href="#"  @click.prevent="logout">登出</a></li>
                 </ul>
             </div>
@@ -26,7 +26,7 @@
         <section>
             <div class="container" >
                 <div class="relative">
-                    <form class="login-modal" v-if="isModalshow" id="myform" @keyup="keyevent">
+                    <form class="login-modal" v-if="isLoginModalShow" id="myform" @keyup="keyEvent">
                         <a href="#"  @click.prevent="closeModal" class="material-icons close">close</a>
                         <div class="input-group" :class="{focus:loginObj.username}">
                             <span class="material-icons">person</span>
@@ -40,7 +40,8 @@
                             <input type="password" id="password"  @change="validateFn" v-model="loginObj.password" name="password">
                         </div>
                         <div class="messages password"></div>
-                        <p>Forget Password ?</p>
+                        <a href="#" class="forget">Forget Password ?</a>
+                        <p></p>
                         <button type="button" class="login-btn loginBtn" @click="login">Login</button>
                     </form>
                     <table class="table mt-4" v-if="isLogin">
@@ -79,7 +80,7 @@
                                         <button type="button" class="btn btn-outline-primary btn-sm" data-status="編輯產品" @click="productModalShow(item,$event)">
                                         編輯
                                         </button>
-                                        <button type="button" class="btn btn-outline-danger btn-sm"  @click="delProductModal(item.id)">
+                                        <button type="button" class="btn btn-outline-danger btn-sm"  @click="delProductModal(item)">
                                         刪除
                                         </button>
                                     </div>
@@ -100,7 +101,7 @@
         <div class="modal-content border-0">
         <div class="modal-header bg-dark text-white">
             <h5 id="productModalLabel" class="modal-title">
-            <span>{{usemethod}}</span>
+            <span>{{useMethod}}</span>
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -181,7 +182,7 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" @click="getProduct">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal" >
             取消
             </button>
             <button type="button" class="btn btn-primary" @click="ProductStatus" >
@@ -203,7 +204,7 @@
             </div>
             <div class="modal-body">
                 是否刪除
-                <strong class="text-danger"></strong> 商品(刪除後將無法恢復)。
+                <strong class="text-danger">{{delItem.title}}</strong> 商品(刪除後將無法恢復)。
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">

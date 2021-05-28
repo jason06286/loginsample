@@ -26,9 +26,9 @@ const app=Vue.createApp(
                 path :'jason06286',
                 productData:[],
                 isLogin:false,
-                isModalshow:true,
+                isLoginModalShow:true,
                 errors:"",
-                usemethod:'新增產品',
+                useMethod:'新增產品',
                 temp:{
                     title: "", 
                     category: "",
@@ -41,7 +41,7 @@ const app=Vue.createApp(
                     imageUrl : "",
                     imagesUrl: [],
                 },
-                id:'',
+                delItem:'',
                 productModal:'',
                 delModal:'',
 
@@ -78,9 +78,6 @@ const app=Vue.createApp(
                     }
             },
             //work start
-            init() {
-                this.storgeToken(false)
-            },
             login() {
                 this.validateFn()
                 if(this.errors === undefined){
@@ -95,11 +92,14 @@ const app=Vue.createApp(
                         .then(res => {
                             console.log(res)
                             alert(res.data.message)
-                            this.isModalshow=!res.data.success
+                            this.isLoginModalShow=!res.data.success
                             if(res.data.success){
                                 this.isLogin=res.data.success
                                 this.clearModal()
                                 this.storgeToken(res.data)
+                            }else{
+                                const label=document.querySelector('.input-group label')
+                                label.click()
                             }
                         })
                         .catch(err => {
@@ -116,8 +116,7 @@ const app=Vue.createApp(
                     axios.defaults.headers.common.Authorization=cookieToken
                     this.getProduct()
                 }else{
-                    const token=""
-                    document.cookie=`hexToken=${token};expires=${new Date()}`
+                    document.cookie = 'hexToken=; expires=; path=/';
                     const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
                     axios.defaults.headers.common.Authorization=cookieToken
                 }
@@ -132,7 +131,7 @@ const app=Vue.createApp(
                         alert(res.data.message)
                         if(res.data.success){
                             this.isLogin=!res.data.success
-                            this.isModalshow=res.data.success
+                            this.isLoginModalShow=res.data.success
                             this.storgeToken(!res.data.success)
                         }
                     })
@@ -151,7 +150,7 @@ const app=Vue.createApp(
                         console.log(res)
                         alert(`登入${res.data.success?'成功':'失敗'}`)
                         this.isLogin=res.data.success
-                        this.isModalshow=!res.data.success
+                        this.isLoginModalShow=!res.data.success
                     })
                     .catch(err => {
                         console.log(err.response)
@@ -170,10 +169,10 @@ const app=Vue.createApp(
                         console.log(err.response)
                     })
             },
-            delProduct(e) {
+            delProduct() {
                     axios({
                         method: 'delete',
-                        url: `${this.url}api/${this.path}/admin/product/${this.id}`,
+                        url: `${this.url}api/${this.path}/admin/product/${this.delItem.id}`,
                     })
                         .then(res => {
                             console.log(res)
@@ -188,7 +187,7 @@ const app=Vue.createApp(
                         })
             },
             ProductStatus() {
-                if(this.usemethod === '新增產品'){
+                if(this.useMethod === '新增產品'){
                     axios({
                         method: 'post',
                         url: `${this.url}api/${this.path}/admin/product`,
@@ -213,7 +212,7 @@ const app=Vue.createApp(
                             console.log(err.response)
                         })
                 }
-                if(this.usemethod === '編輯產品'){
+                if(this.useMethod === '編輯產品'){
                     axios({
                         method: 'put',
                         url: `${this.url}api/${this.path}/admin/product/${this.temp.id}`,
@@ -239,16 +238,15 @@ const app=Vue.createApp(
                         })
                 }
             },
-            closeModal(e){
-                this.isModalshow=false
+            closeModal(){
+                this.isLoginModalShow=false
                 this.clearModal()
             },
-            keyevent(e){
+            keyEvent(e){
                 if(e.keyCode === 13){
                     this.login()
                 }else if(e.keyCode === 27){
-                    this.clearModal()
-                    this.isModalshow=false
+                    this.closeModal()
                 }
             },
             addImage(){
@@ -262,13 +260,12 @@ const app=Vue.createApp(
                 const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
                 console.log(cookieToken)
                 if(e.target.dataset.status === "編輯產品" && cookieToken != ""){
-                    this.usemethod="編輯產品"
-                    console.log(item)
-                    this.temp=item
+                    this.useMethod="編輯產品"
+                    this.temp=JSON.parse(JSON.stringify(item))
                     this.temp.imagesUrl=this.temp.imagesUrl??[]
                     this.productModal.show()
                 }else if(e.target.dataset.status === "新增產品" && cookieToken != ""){
-                    this.usemethod="新增產品"
+                    this.useMethod="新增產品"
                     this.temp={
                         title: "", 
                         category: "",
@@ -284,15 +281,17 @@ const app=Vue.createApp(
                     this.productModal.show()
                 }else{
                     alert("驗證錯誤，請重新登入")
+                    const label=document.querySelector('.input-group label')
+                    label.click()
                 }
             },
-            delProductModal(id){
-                this.id=id
+            delProductModal(item){
+                this.delItem=item
                 this.delModal.show()
             }
         },
         mounted() {
-            this.init()
+            this.storgeToken(false)
             this.productModal = new bootstrap.Modal(document.querySelector('#productModal'))
             this.delModal = new bootstrap.Modal(document.querySelector('#delProductModal'))
         },
