@@ -195,8 +195,6 @@ const app=Vue.createApp(
                             data:{
                                 ...this.temp,
                                 is_enabled: parseInt(this.temp.is_enabled),
-                                origin_price: parseInt(this.temp.origin_price),
-                                price:parseInt(this.temp.price),
                             }
                         }
                     })
@@ -220,8 +218,6 @@ const app=Vue.createApp(
                             data:{
                                 ...this.temp,
                                 is_enabled: parseInt(this.temp.is_enabled),
-                                origin_price: parseInt(this.temp.origin_price),
-                                price:parseInt(this.temp.price),
                             }
                         }
                     })
