@@ -1,5 +1,14 @@
+import productModal from "./productModal.js"
+import delModal from "./delModal.js"
+import pageBtn from "./pagination.js"
+
 const app=Vue.createApp(
     {
+        components:{
+            productModal,
+            delModal,
+            pageBtn
+        },
         data() {
             return {
                 constraints : {
@@ -42,9 +51,10 @@ const app=Vue.createApp(
                     imagesUrl: [],
                 },
                 delItem:'',
-                productModal:'',
-                delModal:'',
-
+                productModalDom:'',
+                delModalDom:'',
+                page:2,
+                pagination:''
             }
         },
         methods: {
@@ -156,83 +166,21 @@ const app=Vue.createApp(
                         console.log(err.response)
                     })
             },
-            getProduct() {
+            getProduct(page) {
+                this.page=page
                 axios({
                     method: 'get',
-                    url: `${this.url}api/${this.path}/admin/products`,
+                    url: `${this.url}api/${this.path}/admin/products?page=${this.page}`,
                 }).then((res )=> {
                         this.productData=res.data.products
+                        this.pagination=res.data.pagination
                         console.log(res)
                         console.log(this.productData)
+                        console.log('this.pagination :>> ', this.pagination);
                     })
                     .catch(err => {
                         console.log(err.response)
                     })
-            },
-            delProduct() {
-                    axios({
-                        method: 'delete',
-                        url: `${this.url}api/${this.path}/admin/product/${this.delItem.id}`,
-                    })
-                        .then(res => {
-                            console.log(res)
-                            alert(res.data.message)
-                            if(res.data.success){
-                                this.delModal.hide()
-                                this.getProduct()
-                            }
-                        })
-                        .catch(err => {
-                            console.log(err.response)
-                        })
-            },
-            ProductStatus() {
-                if(this.useMethod === '新增產品'){
-                    axios({
-                        method: 'post',
-                        url: `${this.url}api/${this.path}/admin/product`,
-                        data:{
-                            data:{
-                                ...this.temp,
-                                is_enabled: parseInt(this.temp.is_enabled),
-                            }
-                        }
-                    })
-                        .then(res => {
-                            console.log(res)
-                            alert(res.data.message)
-                            if(res.data.success){
-                                this.productModal.hide()
-                                this.getProduct()
-                            }
-                        })
-                        .catch(err => {
-                            console.log(err.response)
-                        })
-                }
-                if(this.useMethod === '編輯產品'){
-                    axios({
-                        method: 'put',
-                        url: `${this.url}api/${this.path}/admin/product/${this.temp.id}`,
-                        data:{
-                            data:{
-                                ...this.temp,
-                                is_enabled: parseInt(this.temp.is_enabled),
-                            }
-                        }
-                    })
-                        .then(res => {
-                            console.log(res)
-                            alert(res.data.message)
-                            if(res.data.success){
-                                this.productModal.hide()
-                                this.getProduct()
-                            }
-                        })
-                        .catch(err => {
-                            console.log(err.response)
-                        })
-                }
             },
             closeModal(){
                 this.isLoginModalShow=false
@@ -245,21 +193,15 @@ const app=Vue.createApp(
                     this.closeModal()
                 }
             },
-            addImage(){
-                this.temp.imagesUrl.push(this.temp.imageUrl)
-                this.temp.imageUrl=""
-            },
-            delImage(){
-                this.temp.imagesUrl.pop()
-            },
+            
             productModalShow(item,e){
                 const cookieToken = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1")
-                console.log(cookieToken)
                 if(e.target.dataset.status === "編輯產品" && cookieToken != ""){
                     this.useMethod="編輯產品"
                     this.temp=JSON.parse(JSON.stringify(item))
                     this.temp.imagesUrl=this.temp.imagesUrl??[]
-                    this.productModal.show()
+                    console.log("編輯產品",this.temp)
+                    this.productModalDom.show()
                 }else if(e.target.dataset.status === "新增產品" && cookieToken != ""){
                     this.useMethod="新增產品"
                     this.temp={
@@ -274,7 +216,8 @@ const app=Vue.createApp(
                         imageUrl : "",
                         imagesUrl: [],
                     },
-                    this.productModal.show()
+                    console.log("新增產品",this.temp)
+                    this.productModalDom.show()
                 }else{
                     alert("驗證錯誤，請重新登入")
                     const label=document.querySelector('.input-group label')
@@ -283,13 +226,18 @@ const app=Vue.createApp(
             },
             delProductModal(item){
                 this.delItem=item
-                this.delModal.show()
+                this.delModalDom.show()
+            },
+            addProductModalDom(dom){
+                this.productModalDom=dom
+            },
+            addDelModalDom(dom){
+                this.delModalDom=dom
             }
         },
         mounted() {
             this.storgeToken(false)
-            this.productModal = new bootstrap.Modal(document.querySelector('#productModal'))
-            this.delModal = new bootstrap.Modal(document.querySelector('#delProductModal'))
+            console.log(this.delModalDom)
         },
     }
 )
