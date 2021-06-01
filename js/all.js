@@ -166,7 +166,7 @@ const app=Vue.createApp(
                         console.log(err.response)
                     })
             },
-            getProduct(page) {
+            getProduct(page=this.page) {
                 this.page=page
                 axios({
                     method: 'get',

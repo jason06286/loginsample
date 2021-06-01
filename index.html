@@ -94,6 +94,7 @@
                     
                 </div>
                 <page-btn 
+                v-if="isLogin"
                 :pagination="pagination"
                 @emit-page="getProduct"
                 ></page-btn>
