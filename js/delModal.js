@@ -1,5 +1,5 @@
 export default{
-    props:['delItem',],
+    props:['delItem'],
     data() {
         return {
             url :'https://vue3-course-api.hexschool.io/',

@@ -53,8 +53,8 @@ const app=Vue.createApp(
                 delItem:'',
                 productModalDom:'',
                 delModalDom:'',
-                page:2,
-                pagination:''
+                page:1,
+                pagination:{}
             }
         },
         methods: {
